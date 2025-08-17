@@ -1,209 +1,267 @@
 <!doctype html>
 <html lang="pt-BR">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>AegisCrypt</title>
-  <style>
-    :root { --bg:#0f1222; --card:#161a2f; --muted:#8a93b2; --text:#e6e9f5; --accent:#7aa2ff; --accent-2:#64d2ff; --danger:#ff6b6b; --ok:#58d68d; --radius:16px; }
-    *{box-sizing:border-box} html,body{height:100%} body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif;background:radial-gradient(1200px 800px at 20% -10%,#1a1f3f 0%,transparent 60%),radial-gradient(1000px 700px at 120% 10%,#11243c 0%,transparent 60%),var(--bg);color:var(--text)}
-    .container{max-width:1000px;margin:40px auto;padding:0 16px} .header{display:flex;align-items:center;justify-content:space-between;gap:12px} h1{margin:0;font-size:28px} .badge{font-size:12px;color:var(--accent-2);background:rgba(100,210,255,.1);padding:6px 10px;border-radius:999px;border:1px solid rgba(100,210,255,.2)}
-    .grid{display:grid;grid-template-columns:1fr;gap:16px;margin-top:18px} @media(min-width:920px){.grid{grid-template-columns:1fr 1fr}} .card{background:linear-gradient(180deg,rgba(255,255,255,.02),rgba(255,255,255,0));border:1px solid rgba(255,255,255,.08);border-radius:var(--radius);padding:16px;backdrop-filter:blur(6px);box-shadow:0 10px 30px rgba(0,0,0,.3)}
-    .card h2{margin:0 0 8px;font-size:18px;color:#dfe7ff} .sub{color:var(--muted);font-size:13px;margin-top:4px} textarea,input[type=password],input[type=text]{width:100%;padding:12px 14px;border-radius:12px;border:1px solid rgba(255,255,255,.08);background:#0e1327;color:var(--text);resize:vertical;min-height:120px;outline:none} input[type=password],input[type=text]{min-height:auto} textarea:focus,input:focus{border-color:rgba(122,162,255,.5);box-shadow:0 0 0 3px rgba(122,162,255,.15)}
-    .row{display:flex;gap:10px;flex-wrap:wrap} .btn{border:1px solid rgba(255,255,255,.12);background:linear-gradient(180deg,rgba(122,162,255,.18),rgba(122,162,255,.08));color:var(--text);padding:10px 14px;border-radius:12px;cursor:pointer;font-weight:600;transition:transform .06s ease,filter .2s ease} .btn:hover{filter:brightness(1.08)}.btn:active{transform:translateY(1px)}.btn.secondary{background:transparent}.btn.danger{background:linear-gradient(180deg,rgba(255,107,107,.18),rgba(255,107,107,.08));border-color:rgba(255,107,107,.35)}
-    .hint{font-size:12px;color:var(--muted);margin-top:8px} .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12px} .out{min-height:160px;background:#0b1022} .footer{margin-top:22px;font-size:12px;color:var(--muted)} .status{margin-top:10px;font-size:13px}.ok{color:var(--ok)}.err{color:var(--danger)} .file{display:inline-block;padding:9px 12px;border:1px dashed rgba(255,255,255,.25);border-radius:10px;cursor:pointer} input[type=file]{display:none} .switch{display:flex;align-items:center;gap:8px} .kbd{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;background:#121735;border:1px solid rgba(255,255,255,.08);padding:2px 6px;border-radius:6px;font-size:12px} .list{margin-top:10px} .item{display:flex;justify-content:space-between;gap:10px;align-items:center;border:1px solid rgba(255,255,255,.08);padding:10px;border-radius:10px;margin-top:8px;background:#0e1327}
-  </style>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>AegisCrypt (Simplificado)</title>
+    <style>
+        :root { --bg:#0f1222; --card:#161a2f; --muted:#8a93b2; --text:#e6e9f5; --accent:#7aa2ff; --accent-2:#64d2ff; --danger:#ff6b6b; --ok:#58d68d; --radius:16px; }
+        * { box-sizing: border-box; }
+        html, body { height: 100%; }
+        body { margin: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Inter, Arial, sans-serif; background: radial-gradient(1200px 800px at 20% -10%, #1a1f3f 0%, transparent 60%), radial-gradient(1000px 700px at 120% 10%, #11243c 0%, transparent 60%), var(--bg); color: var(--text); }
+        .container { max-width: 1000px; margin: 40px auto; padding: 0 16px; }
+        .header { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+        h1 { margin: 0; font-size: 28px; }
+        .badge { font-size: 12px; color: var(--accent-2); background: rgba(100, 210, 255, .1); padding: 6px 10px; border-radius: 999px; border: 1px solid rgba(100, 210, 255, .2); }
+        .grid { display: grid; grid-template-columns: 1fr; gap: 16px; margin-top: 18px; }
+        @media(min-width: 920px) { .grid { grid-template-columns: 1fr 1fr; } }
+        .card { background: linear-gradient(180deg, rgba(255, 255, 255, .02), rgba(255, 255, 255, 0)); border: 1px solid rgba(255, 255, 255, .08); border-radius: var(--radius); padding: 16px; backdrop-filter: blur(6px); box-shadow: 0 10px 30px rgba(0, 0, 0, .3); }
+        .card h2 { margin: 0 0 8px; font-size: 18px; color: #dfe7ff; }
+        .sub { color: var(--muted); font-size: 13px; margin-top: 4px; }
+        textarea, input[type=password], input[type=text] { width: 100%; padding: 12px 14px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, .08); background: #0e1327; color: var(--text); resize: vertical; min-height: 120px; outline: none; }
+        input[type=password], input[type=text] { min-height: auto; }
+        textarea:focus, input:focus { border-color: rgba(122, 162, 255, .5); box-shadow: 0 0 0 3px rgba(122, 162, 255, .15); }
+        .row { display: flex; gap: 10px; flex-wrap: wrap; }
+        .btn { border: 1px solid rgba(255, 255, 255, .12); background: linear-gradient(180deg, rgba(122, 162, 255, .18), rgba(122, 162, 255, .08)); color: var(--text); padding: 10px 14px; border-radius: 12px; cursor: pointer; font-weight: 600; transition: transform .06s ease, filter .2s ease; }
+        .btn:hover { filter: brightness(1.08); }
+        .btn:active { transform: translateY(1px); }
+        .btn.secondary { background: transparent; }
+        .btn.danger { background: linear-gradient(180deg, rgba(255, 107, 107, .18), rgba(255, 107, 107, .08)); border-color: rgba(255, 107, 107, .35); }
+        .hint { font-size: 12px; color: var(--muted); margin-top: 8px; }
+        .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 12px; }
+        .out { min-height: 160px; background: #0b1022; }
+        .footer { margin-top: 22px; font-size: 12px; color: var(--muted); }
+        .status { margin-top: 10px; font-size: 13px; }
+        .ok { color: var(--ok); }
+        .err { color: var(--danger); }
+        .file { display: inline-block; padding: 9px 12px; border: 1px dashed rgba(255, 255, 255, .25); border-radius: 10px; cursor: pointer; }
+        input[type=file] { display: none; }
+    </style>
 </head>
 <body>
 <div class="container">
-  <div class="header">
-    <h1>AegisCrypt</h1>
-    <span class="badge">AES‑256‑GCM • PBKDF2‑SHA‑256 • WebCrypto • Auto‑Key sem exposição</span>
-  </div>
-
-  <div class="grid">
-    <div class="card">
-      <h2>Entrada</h2>
-      <div class="sub">Digite o texto a ser <strong>criptografado</strong> ou cole o JSON para <strong>descriptografar</strong>.</div>
-      <textarea id="input" placeholder="Seu texto aqui..."></textarea>
-
-      <div class="row" style="margin-top:10px;align-items:center;">
-        <input id="password" type="password" placeholder="Senha (modo Manual, opcional)" />
-        <button class="btn secondary" id="genPass">Gerar senha</button>
-      </div>
-
-      <div class="row switch" style="margin-top:8px;align-items:center;">
-        <label><input type="checkbox" id="autoMode" checked> Modo Auto (senha própria por mensagem, embutida)</label>
-      </div>
-      <div class="row switch" style="align-items:center;">
-        <label><input type="checkbox" id="bindDevice" checked> Vincular ao navegador (só abre neste dispositivo)</label>
-      </div>
-
-      <div class="hint">No <b>Modo Auto</b>, uma senha aleatória é gerada por mensagem e <em>selada</em> com uma <b>chave de cobertura</b> que <u>você define</u> pelo UI. A frase secreta <strong>não</strong> fica no código fonte nem no repositório.</div>
-
-      <div class="row" style="margin-top:12px;">
-        <button class="btn" id="encryptBtn">Criptografar</button>
-        <button class="btn" id="decryptBtn">Descriptografar</button>
-        <button class="btn secondary" id="clearBtn">Limpar</button>
-      </div>
-
-      <div class="status" id="status"></div>
-
-      <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
-        <button class="btn secondary" id="setupCoverBtn">Configurar chave de cobertura</button>
-        <button class="btn secondary" id="exportCoverBtn">Exportar chave (b64)</button>
-        <button class="btn secondary" id="importCoverBtn">Importar chave (b64)</button>
-      </div>
-      <div class="hint" id="coverHint"></div>
+    <div class="header">
+        <h1>AegisCrypt</h1>
+        <span class="badge">AES‑256‑GCM • PBKDF2‑SHA‑256 • WebCrypto</span>
     </div>
 
-    <div class="card">
-      <h2>Saída</h2>
-      <div class="sub">Copie o resultado, baixe como arquivo .enc, ou salve no navegador.</div>
-      <textarea id="output" class="out mono" placeholder="Saída aparecerá aqui..." readonly></textarea>
+    <div class="grid">
+        <div class="card">
+            <h2>Entrada</h2>
+            <div class="sub">Digite o texto a ser <strong>criptografado</strong> ou cole o JSON para <strong>descriptografar</strong>.</div>
+            <textarea id="input" placeholder="Seu texto aqui..."></textarea>
 
-      <div class="row" style="margin-top:12px;">
-        <button class="btn" id="copyBtn">Copiar</button>
-        <label for="fileIn" class="file">Carregar arquivo para descriptografia</label>
-        <input id="fileIn" type="file" accept=".enc,application/json,text/plain" />
-        <button class="btn" id="downloadBtn">Baixar .enc</button>
-        <button class="btn" id="saveBtn">Salvar no navegador</button>
-      </div>
-      <div class="hint mono" id="meta"></div>
+            <div class="row" style="margin-top:10px;align-items:center;">
+                <input id="password" type="password" placeholder="Senha" />
+                <button class="btn secondary" id="genPass">Gerar senha</button>
+            </div>
+
+            <div class="hint">A senha será usada para criptografar ou descriptografar a mensagem.</div>
+
+            <div class="row" style="margin-top:12px;">
+                <button class="btn" id="encryptBtn">Criptografar</button>
+                <button class="btn" id="decryptBtn">Descriptografar</button>
+                <button class="btn secondary" id="clearBtn">Limpar</button>
+            </div>
+
+            <div class="status" id="status"></div>
+        </div>
+
+        <div class="card">
+            <h2>Saída</h2>
+            <div class="sub">Copie o resultado ou baixe como arquivo .enc.</div>
+            <textarea id="output" class="out mono" placeholder="Saída aparecerá aqui..." readonly></textarea>
+
+            <div class="row" style="margin-top:12px;">
+                <button class="btn" id="copyBtn">Copiar</button>
+                <label for="fileIn" class="file">Carregar arquivo para descriptografia</label>
+                <input id="fileIn" type="file" accept=".enc,application/json,text/plain" />
+                <button class="btn" id="downloadBtn">Baixar .enc</button>
+            </div>
+            <div class="hint mono" id="meta"></div>
+        </div>
     </div>
-  </div>
 
-  <div class="card" style="margin-top:16px;">
-    <h2>Bkp server</h2>
-    <div class="sub">inside</div>
-    <div id="savedList" class="list"></div>
-  </div>
-
-  <div class="card" style="margin-top:16px;">
-    <h2>Como funciona</h2>
-    <div class="sub">
-      <ul>
-        <li><b>Manual:</b> você fornece a senha → derivamos chave com <b>PBKDF2‑SHA‑256</b> (salt 128 bits, ≥600k iterações) → ciframos com <b>AES‑GCM‑256</b>.</li>
-        <li><b>Auto:</b> geramos <em>senha por mensagem</em> e a <b>selamos</b> com uma <i>chave de cobertura</i> (derivada da frase que você define) + <i>salt do dispositivo</i> (opcional).</li>
-      </ul>
+    <div class="card" style="margin-top:16px;">
+        <h2>Como funciona</h2>
+        <div class="sub">
+            <ul>
+                <li>Você fornece a senha → derivamos uma chave com <b>PBKDF2‑SHA‑256</b> (salt de 128 bits, ≥600k iterações) → ciframos com <b>AES‑GCM‑256</b>.</li>
+            </ul>
+        </div>
+        <div class="hint">AES‑256‑GCM é um padrão moderno de criptografia, considerado "nível militar" quando bem aplicado. O app roda 100% no seu navegador, sem enviar dados para servidores.</div>
     </div>
-    <div class="hint">Se quiser máxima segurança, mantenha a chave de cobertura offline e vinculada ao dispositivo via export/import.</div>
-  </div>
 
-  <div class="footer">
-    AES‑256‑GCM é padrão moderno "nível militar" quando bem aplicado. O app roda 100% no seu navegador.
-    desenvolvido por Eder Prioli
-  </div>
+    <div class="footer">
+        Desenvolvido por Eder Prioli
+    </div>
 </div>
 
 <script>
-// ===== Utilidades =====
-const $ = (s)=>document.querySelector(s);
+// ====================================================================
+// ============ INÍCIO DO CÓDIGO SIMPLIFICADO =========================
+// ====================================================================
+
+// Funções utilitárias e parâmetros
+const $ = (s) => document.querySelector(s);
 const enc = new TextEncoder();
 const dec = new TextDecoder();
-const b64e = (buf)=> btoa(String.fromCharCode(...new Uint8Array(buf)));
-const b64d = (b64)=> Uint8Array.from(atob(b64), c=>c.charCodeAt(0));
-const rand = (n)=>{const b=new Uint8Array(n);crypto.getRandomValues(b);return b};
+const b64e = (buf) => btoa(String.fromCharCode(...new Uint8Array(buf)));
+const b64d = (b64) => Uint8Array.from(atob(b64), (c) => c.charCodeAt(0));
+const rand = (n) => { const b = new Uint8Array(n); crypto.getRandomValues(b); return b; };
 
-// ===== Parâmetros criptográficos =====
-const PARAMS = { version:2, kdf:'PBKDF2-SHA256', iterations:600_000, saltBytes:16, nonceBytes:12, keyLen:256 };
+const CRYPTO_PARAMS = {
+    version: 1,
+    kdf: 'PBKDF2-SHA256',
+    iterations: 600_000,
+    saltBytes: 16,
+    nonceBytes: 12,
+    keyLen: 256,
+};
 
-// ===== Helpers crypto =====n
-async function sha256(bytes){ return new Uint8Array(await crypto.subtle.digest('SHA-256', bytes)); }
-async function deriveKeyFromPassword(password, salt){
-  const keyMaterial = await crypto.subtle.importKey('raw', enc.encode(password), {name:'PBKDF2'}, false, ['deriveKey']);
-  return crypto.subtle.deriveKey({name:'PBKDF2', salt, iterations: PARAMS.iterations, hash:'SHA-256'}, keyMaterial, {name:'AES-GCM', length: PARAMS.keyLen}, false, ['encrypt','decrypt']);
-}
-async function importAesGcmKeyRaw(bytes){ return crypto.subtle.importKey('raw', bytes, {name:'AES-GCM'}, false, ['encrypt','decrypt']); }
-
-// ===== Cover key management (NO DEFAULT IN CODE) =====
-// store only the *derived cover key bytes* (SHA-256) base64 in localStorage under 'cover_key_b64'.
-function coverKeyExists(){ return !!localStorage.getItem('cover_key_b64'); }
-async function setCoverKeyFromPhrase(phrase, useDeviceSalt){
-  // derive cover key bytes = SHA256( phrase [+ deviceSalt] )
-  let base = enc.encode(phrase);
-  if(useDeviceSalt){ const ds = getOrCreateDeviceSalt(); const merged = new Uint8Array(base.length + ds.length); merged.set(base,0); merged.set(ds, base.length); base = merged; }
-  const digest = await sha256(base);
-  localStorage.setItem('cover_key_b64', b64e(digest));
-}
-function importCoverKeyFromB64(b64){ localStorage.setItem('cover_key_b64', b64); }
-function exportCoverKeyB64(){ return localStorage.getItem('cover_key_b64') || ''; }
-function clearCoverKey(){ localStorage.removeItem('cover_key_b64'); }
-
-function getOrCreateDeviceSalt(){ let s = localStorage.getItem('device_salt_b64'); if(!s){ s = b64e(rand(16)); localStorage.setItem('device_salt_b64', s); } return b64d(s); }
-
-async function buildCoverKeyBytes(useDeviceSalt){
-  const stored = localStorage.getItem('cover_key_b64');
-  if(!stored) throw new Error('Chave de cobertura não configurada. Clique em "Configurar chave de cobertura".');
-  // stored is SHA256(phrase [+ deviceSalt?]) — if device-salt was used when setting, it is already baked in
-  return b64d(stored);
+// Funções criptográficas
+async function deriveKeyFromPassword(password, salt) {
+    const keyMaterial = await crypto.subtle.importKey('raw', enc.encode(password), { name: 'PBKDF2' }, false, ['deriveKey']);
+    return crypto.subtle.deriveKey(
+        { name: 'PBKDF2', salt, iterations: CRYPTO_PARAMS.iterations, hash: 'SHA-256' },
+        keyMaterial,
+        { name: 'AES-GCM', length: CRYPTO_PARAMS.keyLen },
+        false,
+        ['encrypt', 'decrypt']
+    );
 }
 
-// ===== Password generation =====
-function genReadablePassword(len=22){ const alphabet='abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_@#%*+'; const arr=rand(len); let out=''; for(const b of arr) out+=alphabet[b%alphabet.length]; return out; }
-
-// ===== Encryption flows =====
-async function encryptManual(plaintext, password){ const salt = rand(PARAMS.saltBytes); const key = await deriveKeyFromPassword(password, salt); const nonce = rand(PARAMS.nonceBytes); const ct = await crypto.subtle.encrypt({name:'AES-GCM', iv:nonce}, key, enc.encode(plaintext)); return { v:PARAMS.version, mode:'manual', a:'AES-256-GCM', kdf:PARAMS.kdf, it:PARAMS.iterations, salt:b64e(salt), nonce:b64e(nonce), ct:b64e(ct) }; }
-
-async function encryptAuto(plaintext, bindDevice){ const msgPass = genReadablePassword(); const salt = rand(PARAMS.saltBytes); const key = await deriveKeyFromPassword(msgPass, salt); const nonce = rand(PARAMS.nonceBytes); const ct = await crypto.subtle.encrypt({name:'AES-GCM', iv:nonce}, key, enc.encode(plaintext)); // seal the msgPass with cover key
-  const coverKeyBytes = await buildCoverKeyBytes(bindDevice);
-  const coverKey = await importAesGcmKeyRaw(coverKeyBytes);
-  const nonce2 = rand(PARAMS.nonceBytes);
-  const sealed = await crypto.subtle.encrypt({name:'AES-GCM', iv:nonce2}, coverKey, enc.encode(msgPass));
-  return { v:PARAMS.version, mode:'auto', a:'AES-256-GCM', kdf:PARAMS.kdf, it:PARAMS.iterations, salt:b64e(salt), nonce:b64e(nonce), ct:b64e(ct), epass:{ n:b64e(nonce2), s:b64e(sealed), bind: !!bindDevice } };
+function genReadablePassword(len = 22) {
+    const alphabet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_@#%*+';
+    const arr = rand(len);
+    let out = '';
+    for (const b of arr) {
+        out += alphabet[b % alphabet.length];
+    }
+    return out;
 }
 
-async function decryptAuto(obj){ const bind = obj?.epass?.bind === true; const coverKeyBytes = await buildCoverKeyBytes(bind); const coverKey = await importAesGcmKeyRaw(coverKeyBytes); const nonce2 = b64d(obj.epass.n); const sealed = b64d(obj.epass.s); const passBuf = await crypto.subtle.decrypt({name:'AES-GCM', iv:nonce2}, coverKey, sealed); const msgPass = dec.decode(passBuf); const salt = b64d(obj.salt); const nonce = b64d(obj.nonce); const ct = b64d(obj.ct); const key = await deriveKeyFromPassword(msgPass, salt); const pt = await crypto.subtle.decrypt({name:'AES-GCM', iv:nonce}, key, ct); return dec.decode(pt); }
+// Funções de manipulação da interface e eventos
+const UI = {
+    showStatus(message, isError = false) {
+        $('#status').innerHTML = `<span class="${isError ? 'err' : 'ok'}">${message}</span>`;
+    },
 
-// ===== Handlers =====
-async function encryptHandler(){ try{ const text = $('#input').value; if(!text) throw new Error('Digite um texto.'); const auto = $('#autoMode').checked; const bind = $('#bindDevice').checked; $('#status').textContent = auto ? 'Criptografando (modo Auto)…' : 'Criptografando (manual)…'; const obj = auto ? await encryptAuto(text, bind) : await encryptManual(text, $('#password').value || ''); $('#output').value = JSON.stringify(obj, null, 2); $('#meta').textContent = metaLine(obj); $('#status').innerHTML = `<span class="ok">OK: ${auto? 'senha embutida (selada) e conteúdo cifrado' : 'conteúdo cifrado' }.</span>`; }catch(e){ $('#status').innerHTML = `<span class="err">Erro: ${e.message}</span>`; } }
+    showMetadata(obj) {
+        const size = obj?.ct ? b64d(obj.ct).length : 0;
+        $('#meta').textContent = `ct=${size} bytes • it=${obj.it}`;
+    },
 
-async function decryptHandler(){ try{ const raw = $('#input').value || $('#output').value; if(!raw) throw new Error('Cole o JSON cifrado.'); const obj = JSON.parse(raw); $('#status').textContent = 'Descriptografando…'; let text; if(obj.mode === 'auto' && obj.epass){ text = await decryptAuto(obj); } else { const pwd = $('#password').value; if(!pwd) throw new Error('Modo manual requer senha.'); const salt = b64d(obj.salt); const nonce = b64d(obj.nonce); const ct = b64d(obj.ct); const key = await deriveKeyFromPassword(pwd, salt); const pt = await crypto.subtle.decrypt({name:'AES-GCM', iv:nonce}, key, ct); text = dec.decode(pt); } $('#output').value = text; $('#meta').textContent = 'OK'; $('#status').innerHTML = '<span class="ok">OK: autenticação GCM verificada.</span>'; }catch(e){ const msg = (/Operation failed|data/.test(e?.message||'')) ? 'Falha de autenticação ou dados corrompidos.' : e.message; $('#status').innerHTML = `<span class="err">Erro: ${msg}</span>`; } }
+    async handleEncrypt() {
+        try {
+            const text = $('#input').value;
+            const password = $('#password').value;
+            if (!text || !password) throw new Error('Digite um texto e uma senha.');
+            
+            UI.showStatus('Criptografando…');
+            
+            const salt = rand(CRYPTO_PARAMS.saltBytes);
+            const key = await deriveKeyFromPassword(password, salt);
+            const nonce = rand(CRYPTO_PARAMS.nonceBytes);
+            const ct = await crypto.subtle.encrypt({ name: 'AES-GCM', iv: nonce }, key, enc.encode(text));
+            
+            const result = {
+                v: CRYPTO_PARAMS.version,
+                a: 'AES-256-GCM',
+                kdf: CRYPTO_PARAMS.kdf,
+                it: CRYPTO_PARAMS.iterations,
+                salt: b64e(salt),
+                nonce: b64e(nonce),
+                ct: b64e(ct)
+            };
+            
+            $('#output').value = JSON.stringify(result, null, 2);
+            UI.showMetadata(result);
+            UI.showStatus('OK: conteúdo cifrado.');
+        } catch (e) {
+            UI.showStatus(`Erro: ${e.message}`, true);
+        }
+    },
 
-function clearAll(){ $('#input').value=''; $('#output').value=''; $('#password').value=''; $('#status').textContent=''; $('#meta').textContent=''; }
-function copyOut(){ const v=$('#output').value.trim(); if(!v) return; navigator.clipboard.writeText(v); $('#status').innerHTML='<span class="ok">Copiado.</span>'; }
-function downloadOut(){ const v=$('#output').value.trim(); if(!v) return; const blob=new Blob([v],{type:'application/json'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='mensagem.enc.json'; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),1000); }
-function genPassword(){ $('#password').value = genReadablePassword(); }
+    async handleDecrypt() {
+        try {
+            const raw = $('#input').value || $('#output').value;
+            const password = $('#password').value;
+            if (!raw) throw new Error('Cole o JSON cifrado.');
+            if (!password) throw new Error('Insira a senha usada para criptografar.');
+            
+            UI.showStatus('Descriptografando…');
+            
+            const obj = JSON.parse(raw);
+            const salt = b64d(obj.salt);
+            const nonce = b64d(obj.nonce);
+            const ct = b64d(obj.ct);
+            const key = await deriveKeyFromPassword(password, salt);
+            const pt = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: nonce }, key, ct);
+            
+            $('#output').value = dec.decode(pt);
+            $('#meta').textContent = 'OK';
+            UI.showStatus('OK: autenticação GCM verificada. Mensagem descriptografada.');
+        } catch (e) {
+            const msg = (/Operation failed|data/.test(e?.message||'')) ? 'Falha de autenticação (senha incorreta) ou dados corrompidos.' : e.message;
+            UI.showStatus(`Erro: ${msg}`, true);
+        }
+    },
 
-// ===== Persistência local =====
-function metaLine(obj){ const size = (obj?.ct? b64d(obj.ct).length:0); return `modo=${obj.mode||'manual'} • ct=${size} bytes • it=${obj.it}`; }
+    handleClear() {
+        $('#input').value = '';
+        $('#output').value = '';
+        $('#password').value = '';
+        UI.showStatus('');
+        $('#meta').textContent = '';
+    },
 
-function loadSaves(){ const list = JSON.parse(localStorage.getItem('enc_saves')||'[]'); const box = $('#savedList'); box.innerHTML=''; list.forEach((it,idx)=>{ const div = document.createElement('div'); div.className='item'; const left = document.createElement('div'); left.innerHTML = `<span class="mono">${it.id}</span><br><span class="hint">${metaLine(it.obj)}</span>`; const right = document.createElement('div'); right.className='row'; const btnUse = document.createElement('button'); btnUse.className='btn'; btnUse.textContent='Usar'; btnUse.onclick=()=>{$('#input').value=JSON.stringify(it.obj,null,2);$('#status').textContent='Carregado.'}; const btnDel = document.createElement('button'); btnDel.className='btn danger'; btnDel.textContent='Excluir'; btnDel.onclick=()=>{ list.splice(idx,1); localStorage.setItem('enc_saves', JSON.stringify(list)); loadSaves(); }; right.append(btnUse, btnDel); div.append(left,right); box.append(div); }); }
+    handleCopy() {
+        const value = $('#output').value.trim();
+        if (!value) return;
+        navigator.clipboard.writeText(value);
+        UI.showStatus('Copiado.');
+    },
 
-function saveCurrent(){ const v = $('#output').value.trim(); if(!v){ $('#status').innerHTML='<span class="err">Nada para salvar.</span>'; return; } let obj; try{ obj = JSON.parse(v); }catch{ $('#status').innerHTML='<span class="err">Saída não é JSON válido.</span>'; return; } const list = JSON.parse(localStorage.getItem('enc_saves')||'[]'); const id = new Date().toISOString().replace('T',' ').slice(0,19); list.unshift({id, obj}); localStorage.setItem('enc_saves', JSON.stringify(list.slice(0,50))); loadSaves(); $('#status').innerHTML='<span class="ok">Salvo no navegador.</span>'; }
+    handleDownload() {
+        const value = $('#output').value.trim();
+        if (!value) return;
+        const blob = new Blob([value], { type: 'application/json' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'mensagem.enc.json';
+        a.click();
+        setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+    },
 
-// ===== Cover key UI actions =====
-$('#setupCoverBtn').addEventListener('click', async ()=>{
-  try{
-    const phrase = prompt('Insira a frase secreta para gerar a chave de cobertura (NÃO compartilhar):');
-    if(!phrase) return alert('Operação cancelada.');
-    const useDevice = confirm('Incluir o salt do dispositivo ao derivar a chave? (recomenda-se SIM para vincular ao navegador)');
-    await setCoverKeyFromPhrase(phrase, useDevice);
-    $('#coverHint').textContent = 'Chave de cobertura configurada (somente a derivação está salva no navegador).';
-  }catch(e){ alert('Erro ao configurar chave: '+e.message); }
-});
+    handleGenPassword() {
+        $('#password').value = genReadablePassword();
+    },
 
-$('#exportCoverBtn').addEventListener('click', ()=>{
-  const b = exportCoverKeyB64(); if(!b) return alert('Nenhuma chave configurada.'); prompt('Copie a chave de cobertura (base64):', b);
-});
+    handleFileLoad(e) {
+        const file = e.target.files?.[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            $('#input').value = event.target.result;
+            UI.showStatus('Arquivo carregado. Agora, insira a senha usada na criptografia e clique em "Descriptografar".');
+        };
+        reader.readAsText(file);
+    },
 
-$('#importCoverBtn').addEventListener('click', ()=>{
-  const b = prompt('Cole a chave de cobertura (base64) para importar:'); if(!b) return; try{ importCoverKeyFromB64(b); alert('Chave importada.'); $('#coverHint').textContent = 'Chave de cobertura importada.'; }catch(e){ alert('Erro: '+e.message); }
-});
+    init() {
+        $('#encryptBtn').addEventListener('click', this.handleEncrypt);
+        $('#decryptBtn').addEventListener('click', this.handleDecrypt);
+        $('#clearBtn').addEventListener('click', this.handleClear);
+        $('#copyBtn').addEventListener('click', this.handleCopy);
+        $('#downloadBtn').addEventListener('click', this.handleDownload);
+        $('#genPass').addEventListener('click', this.handleGenPassword);
+        $('#fileIn').addEventListener('change', this.handleFileLoad);
+    }
+};
 
-// Eventos
-$('#encryptBtn').addEventListener('click', encryptHandler);
-$('#decryptBtn').addEventListener('click', decryptHandler);
-$('#clearBtn').addEventListener('click', clearAll);
-$('#copyBtn').addEventListener('click', copyOut);
-$('#downloadBtn').addEventListener('click', downloadOut);
-$('#genPass').addEventListener('click', genPassword);
-$('#fileIn').addEventListener('change', async (e)=>{ const f=e.target.files?.[0]; if(!f) return; const t=await f.text(); $('#input').value=t; });
-$('#saveBtn').addEventListener('click', saveCurrent);
-
-// Inicialização
-loadSaves();
-if(coverKeyExists()) $('#coverHint').textContent = 'Chave de cobertura já configurada.'; else $('#coverHint').textContent = 'Chave de cobertura NÃO configurada. Clique em Configurar para ativar Modo Auto.';
+// Inicia o aplicativo
+document.addEventListener('DOMContentLoaded', () => UI.init());
 </script>
 </body>
 </html>
