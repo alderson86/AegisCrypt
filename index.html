@@ -5,8 +5,8 @@
   <title>AegisCrypt</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background: linear-gradient(135deg, #1a1a1a, #2d2d2d);
+      font-family: "Courier New", monospace;
+      background: linear-gradient(135deg, #0b1c0b, #1d2a1d);
       color: #e0e0e0;
       margin: 0;
       padding: 0;
@@ -17,14 +17,13 @@
       position: relative;
       overflow-x: hidden;
     }
-    /* Marca d’água */
     body::before {
       content: "";
       position: absolute;
       inset: 0;
-      background: url("marcaagua.png") center center no-repeat;
-      background-size: 400px;
-      opacity: 0.08;
+      background: url("insignia.png") center center no-repeat;
+      background-size: 380px;
+      opacity: 0.05;
       pointer-events: none;
     }
     header {
@@ -33,9 +32,11 @@
       gap: 12px;
       margin: 20px 0;
       z-index: 1;
+      text-transform: uppercase;
+      letter-spacing: 2px;
     }
     header img {
-      height: 48px;
+      height: 56px;
     }
     main {
       width: 95%;
@@ -46,31 +47,46 @@
       z-index: 1;
     }
     .card {
-      background: #2a2a2a;
-      border-radius: 12px;
+      background: #1a261a;
+      border: 2px solid #3b4d3b;
+      border-radius: 8px;
       padding: 20px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.6);
+      position: relative;
     }
-    textarea, input[type="file"] {
+    h2 {
+      color: #9acd32;
+      border-bottom: 1px solid #3b4d3b;
+      padding-bottom: 6px;
+    }
+    textarea, input[type="file"], input[type="password"], input[type="text"] {
       width: 100%;
       padding: 10px;
       margin: 10px 0;
-      border-radius: 6px;
-      border: none;
-      background: #1f1f1f;
+      border-radius: 4px;
+      border: 1px solid #3b4d3b;
+      background: #101b10;
       color: #e0e0e0;
     }
     button {
       margin: 5px;
       padding: 10px 18px;
-      border: none;
-      border-radius: 6px;
-      background: #4cafef;
+      border: 1px solid #3b4d3b;
+      border-radius: 4px;
+      background: #556b2f;
       color: #fff;
+      font-weight: bold;
       cursor: pointer;
+      text-transform: uppercase;
     }
     button:hover {
-      background: #2196f3;
+      background: #6b8e23;
+    }
+    .btn-danger {
+      background: #8b0000;
+    }
+    .btn-danger:hover {
+      background: #b22222;
     }
     .password-box {
       display: flex;
@@ -83,15 +99,50 @@
       flex-direction: column;
       gap: 20px;
     }
+
+    /* Avisos digitais estilo letreiro */
+    .marquee {
+      width: 100%;
+      background: #111;
+      color: #ff2020;
+      font-weight: bold;
+      text-transform: uppercase;
+      white-space: nowrap;
+      overflow: hidden;
+      box-sizing: border-box;
+      border-top: 2px solid #550000;
+      border-bottom: 2px solid #550000;
+    }
+    .marquee span {
+      display: inline-block;
+      padding-left: 100%;
+      animation: marquee 15s linear infinite;
+    }
+    @keyframes marquee {
+      0%   { transform: translateX(0%); }
+      100% { transform: translateX(-100%); }
+    }
+
+    /* Janela terminal */
+    .terminal {
+      background: #000;
+      color: #00ff00;
+      font-family: "Courier New", monospace;
+      padding: 10px;
+      border: 2px solid #0f0;
+      border-radius: 6px;
+      height: 200px;
+      overflow-y: auto;
+      font-size: 12px;
+    }
   </style>
 </head>
 <body>
+<div class="marquee"><span>⚠️ CÓPIA CONTROLADA — RESTRITO — ABIN — NÃO DISTRIBUIR ⚠️</span></div>
+
 <header>
-  <img src="9ab5eac6-22b1-48cf-ad02-591ca0cedca8.jpg" alt="Logo AegisCrypt">
-  <h1>
-    
-    AegisCrypt
-  </h1>
+  <img src="https://images.emojiterra.com/google/noto-emoji/animated-emoji/1f99f.gif" alt="Patch Militar">
+  <h1>AegisCrypt</h1>
 </header>
 
 <main>
@@ -109,6 +160,11 @@
       <button onclick="encryptData()">Criptografar</button>
       <input type="file" id="importEnc" onchange="importFile(event)">
     </div>
+    <!-- Janela de terminal -->
+    <div class="card">
+      <h2>DeepNet Traffic Monitor</h2>
+      <div class="terminal" id="terminal"></div>
+    </div>
   </div>
 
   <!-- Coluna direita (Descriptografar) -->
@@ -116,129 +172,35 @@
     <div class="card">
       <h2>Descriptografar</h2>
       <textarea id="output" readonly></textarea>
-      <button onclick="decryptData()">Descriptografar</button>
+      <button class="btn-danger" onclick="decryptData()">Descriptografar</button>
       <button onclick="copyOutput()">Copiar</button>
       <button onclick="downloadOutput()">Baixar .enc</button>
       <button id="downloadDecrypted" style="display:none;" onclick="downloadDecryptedFile()">Baixar Arquivo Descriptografado</button>
     </div>
     <div class="card">
       <h2>Sobre</h2>
-      <p>O AegisCrypt utiliza criptografia de nível militar <code>AES-256-GCM</code> com PBKDF2, salt, IV aleatório e metadados.</p>
+      <p>O <b>AegisCrypt</b> utiliza criptografia de nível militar <code>AES-256-GCM</code> com PBKDF2, salt, IV aleatório e metadados.</p>
     </div>
   </div>
 </main>
 
+<div class="marquee"><span>⚠️ MONITORADO — SIGILOSO — DIVULGAÇÃO PROIBIDA — NSA / ABIN ⚠️</span></div>
+
 <script>
-/* ==== Funções JS iguais às do seu código anterior ==== */
-function arrayBufferToBase64(buffer) {
-  let binary = '';
-  const bytes = new Uint8Array(buffer);
-  const chunkSize = 0x8000;
-  for (let i = 0; i < bytes.length; i += chunkSize) {
-    const chunk = bytes.subarray(i, i + chunkSize);
-    binary += String.fromCharCode.apply(null, chunk);
-  }
-  return btoa(binary);
+/* ==== Simulação terminal Deep Web ==== */
+const terminal = document.getElementById("terminal");
+function fakeLog() {
+  const ips = ["185.220.101.1", "198.96.155.3", "103.21.244.15", "77.247.110.42"];
+  const status = ["OK", "TIMEOUT", "RELAY", "CIRCUIT-BUILD", "DROP"];
+  const hashes = () => Math.random().toString(36).substring(2,10);
+  const log = `[${new Date().toISOString()}] TOR ${ips[Math.floor(Math.random()*ips.length)]} → ${ips[Math.floor(Math.random()*ips.length)]} | ${status[Math.floor(Math.random()*status.length)]} | HASH:${hashes()}${hashes()}`;
+  
+  const line = document.createElement("div");
+  line.textContent = log;
+  terminal.appendChild(line);
+  terminal.scrollTop = terminal.scrollHeight;
 }
-function base64ToArrayBuffer(base64) {
-  const binary = atob(base64);
-  const len = binary.length;
-  const bytes = new Uint8Array(len);
-  for (let i = 0; i < len; i++) { bytes[i] = binary.charCodeAt(i); }
-  return bytes.buffer;
-}
-async function getKeyMaterial(password) {
-  let enc = new TextEncoder();
-  return crypto.subtle.importKey("raw", enc.encode(password), {name: "PBKDF2"}, false, ["deriveKey"]);
-}
-async function deriveKey(password, salt, iterations=600000) {
-  let keyMaterial = await getKeyMaterial(password);
-  return crypto.subtle.deriveKey(
-    { name: "PBKDF2", salt: salt, iterations: iterations, hash: "SHA-256" },
-    keyMaterial,
-    { name: "AES-GCM", length: 256 },
-    false,
-    ["encrypt", "decrypt"]
-  );
-}
-let decryptedFileData = null;
-let decryptedFileName = "";
-async function encryptData() {
-  const password = document.getElementById('password').value;
-  if (!password) { alert("Informe uma senha."); return; }
-  const salt = crypto.getRandomValues(new Uint8Array(16));
-  const iterations = navigator.hardwareConcurrency > 4 ? 1000000 : 600000;
-  const t0 = performance.now();
-  const key = await deriveKey(password, salt, iterations);
-  const t1 = performance.now();
-  const iv = crypto.getRandomValues(new Uint8Array(12));
-  let data, meta;
-  const fileInput = document.getElementById('fileInput');
-  if (fileInput.files.length > 0) {
-    const file = fileInput.files[0];
-    data = await file.arrayBuffer();
-    meta = {n:file.name, m:file.type, s:file.size, t:"bin"};
-  } else {
-    data = new TextEncoder().encode(document.getElementById('input').value);
-    meta = {t:"txt"};
-  }
-  const ciphertext = await crypto.subtle.encrypt({name: "AES-GCM", iv}, key, data);
-  const encObj = { v:1, t: meta.t, meta: meta, salt: arrayBufferToBase64(salt),
-    iv: arrayBufferToBase64(iv), ct: arrayBufferToBase64(ciphertext) };
-  document.getElementById('output').value = JSON.stringify(encObj);
-  alert(`KDF derivado em ${(t1-t0).toFixed(0)} ms com ${iterations} iterações`);
-}
-async function decryptData() {
-  const password = document.getElementById('password').value;
-  if (!password) { alert("Informe uma senha."); return; }
-  let encObj;
-  try { encObj = JSON.parse(document.getElementById('output').value); }
-  catch(e) { alert("Formato inválido."); return; }
-  const salt = base64ToArrayBuffer(encObj.salt);
-  const iv = base64ToArrayBuffer(encObj.iv);
-  const ciphertext = base64ToArrayBuffer(encObj.ct);
-  const iterations = navigator.hardwareConcurrency > 4 ? 1000000 : 600000;
-  const key = await deriveKey(password, salt, iterations);
-  try {
-    const decrypted = await crypto.subtle.decrypt({name:"AES-GCM", iv:new Uint8Array(iv)}, key, ciphertext);
-    if (encObj.t === "txt") {
-      document.getElementById('output').value = new TextDecoder().decode(decrypted);
-      document.getElementById('downloadDecrypted').style.display = "none";
-    } else {
-      decryptedFileData = new Uint8Array(decrypted);
-      decryptedFileName = encObj.meta?.n || "arquivo.bin";
-      document.getElementById('output').value = "[Arquivo descriptografado pronto para download]";
-      document.getElementById('downloadDecrypted').style.display = "inline-block";
-    }
-  } catch(e) { alert("Senha incorreta ou dados corrompidos."); }
-}
-function copyOutput() { navigator.clipboard.writeText(document.getElementById('output').value); }
-function downloadOutput() {
-  const blob = new Blob([document.getElementById('output').value], {type: "application/json"});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a'); a.href = url; a.download = "data.enc.json"; a.click();
-}
-function downloadDecryptedFile() {
-  if (!decryptedFileData) return;
-  const blob = new Blob([decryptedFileData]);
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a'); a.href = url; a.download = decryptedFileName; a.click();
-}
-function importFile(evt) {
-  const file = evt.target.files[0]; if (!file) return;
-  const reader = new FileReader();
-  reader.onload = e => { document.getElementById('output').value = e.target.result; };
-  reader.readAsText(file);
-}
-function generatePassword() {
-  const charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()";
-  let pass = ""; for (let i=0; i<16; i++) pass += charset.charAt(Math.floor(Math.random()*charset.length));
-  document.getElementById('password').value = pass;
-}
-function togglePassword() {
-  const pwd = document.getElementById('password');
-  pwd.type = pwd.type === "password" ? "text" : "password";
-}
+setInterval(fakeLog, 500);
 </script>
 </body>
 </html>
