@@ -35,9 +35,7 @@
       text-transform: uppercase;
       letter-spacing: 2px;
     }
-    header img {
-      height: 56px;
-    }
+    header img { height: 56px; }
     main {
       width: 95%;
       max-width: 1200px;
@@ -52,7 +50,6 @@
       border-radius: 8px;
       padding: 20px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.6);
-      position: relative;
     }
     h2 {
       color: #9acd32;
@@ -79,26 +76,12 @@
       cursor: pointer;
       text-transform: uppercase;
     }
-    button:hover {
-      background: #6b8e23;
-    }
-    .btn-danger {
-      background: #8b0000;
-    }
-    .btn-danger:hover {
-      background: #b22222;
-    }
-    .password-box {
-      display: flex;
-      gap: 8px;
-      align-items: center;
-    }
+    button:hover { background: #6b8e23; }
+    .btn-danger { background: #8b0000; }
+    .btn-danger:hover { background: #b22222; }
+    .password-box { display: flex; gap: 8px; align-items: center; }
     #output { min-height: 120px; }
-    .col {
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-    }
+    .col { display: flex; flex-direction: column; gap: 20px; }
 
     /* Avisos digitais estilo letreiro */
     .marquee {
@@ -162,7 +145,7 @@
     </div>
     <!-- Janela de terminal -->
     <div class="card">
-      <h2>DeepNet Traffic Monitor</h2>
+      <h2>Onion Traffic Monitor</h2>
       <div class="terminal" id="terminal"></div>
     </div>
   </div>
@@ -179,7 +162,7 @@
     </div>
     <div class="card">
       <h2>Sobre</h2>
-      <p>O <b>AegisCrypt</b> utiliza criptografia de nível militar <code>AES-256-GCM</code> com PBKDF2, salt, IV aleatório e metadados.</p>
+      <p>O <b>AegisCrypt</b> utiliza criptografia de nível militar <code>confidencial</code> desenvolvido por ABIN.</p>
     </div>
   </div>
 </main>
@@ -187,14 +170,137 @@
 <div class="marquee"><span>⚠️ MONITORADO — SIGILOSO — DIVULGAÇÃO PROIBIDA — NSA / ABIN ⚠️</span></div>
 
 <script>
-/* ==== Simulação terminal Deep Web ==== */
+/* ========= Funções Criptografia ========= */
+function arrayBufferToBase64(buffer) {
+  let binary = '';
+  const bytes = new Uint8Array(buffer);
+  const chunkSize = 0x8000;
+  for (let i = 0; i < bytes.length; i += chunkSize) {
+    const chunk = bytes.subarray(i, i + chunkSize);
+    binary += String.fromCharCode.apply(null, chunk);
+  }
+  return btoa(binary);
+}
+function base64ToArrayBuffer(base64) {
+  const binary = atob(base64);
+  const len = binary.length;
+  const bytes = new Uint8Array(len);
+  for (let i = 0; i < len; i++) bytes[i] = binary.charCodeAt(i);
+  return bytes.buffer;
+}
+async function getKeyMaterial(password) {
+  let enc = new TextEncoder();
+  return crypto.subtle.importKey("raw", enc.encode(password), {name: "PBKDF2"}, false, ["deriveKey"]);
+}
+async function deriveKey(password, salt, iterations=600000) {
+  let keyMaterial = await getKeyMaterial(password);
+  return crypto.subtle.deriveKey(
+    { name: "PBKDF2", salt: salt, iterations: iterations, hash: "SHA-256" },
+    keyMaterial,
+    { name: "AES-GCM", length: 256 },
+    false,
+    ["encrypt","decrypt"]
+  );
+}
+
+let decryptedFileData = null;
+let decryptedFileName = "";
+
+async function encryptData() {
+  const password = document.getElementById('password').value;
+  if (!password) { alert("Informe uma senha."); return; }
+  const salt = crypto.getRandomValues(new Uint8Array(16));
+  const iterations = navigator.hardwareConcurrency > 4 ? 1000000 : 600000;
+  const t0 = performance.now();
+  const key = await deriveKey(password, salt, iterations);
+  const t1 = performance.now();
+
+  const iv = crypto.getRandomValues(new Uint8Array(12));
+  let data, meta;
+  const fileInput = document.getElementById('fileInput');
+  if (fileInput.files.length > 0) {
+    const file = fileInput.files[0];
+    data = await file.arrayBuffer();
+    meta = {n:file.name, m:file.type, s:file.size, t:"bin"};
+  } else {
+    data = new TextEncoder().encode(document.getElementById('input').value);
+    meta = {t:"txt"};
+  }
+  const ciphertext = await crypto.subtle.encrypt({name: "AES-GCM", iv}, key, data);
+  const encObj = {
+    v:1,
+    t: meta.t,
+    meta: meta,
+    salt: arrayBufferToBase64(salt),
+    iv: arrayBufferToBase64(iv),
+    ct: arrayBufferToBase64(ciphertext)
+  };
+  document.getElementById('output').value = JSON.stringify(encObj);
+  alert(`KDF derivado em ${(t1-t0).toFixed(0)} ms com ${iterations} iterações`);
+}
+
+async function decryptData() {
+  const password = document.getElementById('password').value;
+  if (!password) { alert("Informe uma senha."); return; }
+  let encObj;
+  try { encObj = JSON.parse(document.getElementById('output').value); }
+  catch(e) { alert("Formato inválido."); return; }
+
+  const salt = base64ToArrayBuffer(encObj.salt);
+  const iv = base64ToArrayBuffer(encObj.iv);
+  const ciphertext = base64ToArrayBuffer(encObj.ct);
+  const iterations = navigator.hardwareConcurrency > 4 ? 1000000 : 600000;
+  const key = await deriveKey(password, salt, iterations);
+
+  try {
+    const decrypted = await crypto.subtle.decrypt({name:"AES-GCM", iv:new Uint8Array(iv)}, key, ciphertext);
+    if (encObj.t === "txt") {
+      document.getElementById('output').value = new TextDecoder().decode(decrypted);
+      document.getElementById('downloadDecrypted').style.display = "none";
+    } else {
+      decryptedFileData = new Uint8Array(decrypted);
+      decryptedFileName = encObj.meta?.n || "arquivo.bin";
+      document.getElementById('output').value = "[Arquivo descriptografado pronto para download]";
+      document.getElementById('downloadDecrypted').style.display = "inline-block";
+    }
+  } catch(e) { alert("Senha incorreta ou dados corrompidos."); }
+}
+
+function copyOutput() { navigator.clipboard.writeText(document.getElementById('output').value); }
+function downloadOutput() {
+  const blob = new Blob([document.getElementById('output').value], {type: "application/json"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url; a.download = "data.enc.json"; a.click();
+}
+function downloadDecryptedFile() {
+  if (!decryptedFileData) return;
+  const blob = new Blob([decryptedFileData]);
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url; a.download = decryptedFileName; a.click();
+}
+function importFile(evt) {
+  const file = evt.target.files[0]; if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => { document.getElementById('output').value = e.target.result; };
+  reader.readAsText(file);
+}
+function generatePassword() {
+  const charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()";
+  let pass = ""; for (let i=0;i<16;i++) pass += charset.charAt(Math.floor(Math.random()*charset.length));
+  document.getElementById('password').value = pass;
+}
+function togglePassword() {
+  const pwd = document.getElementById('password');
+  pwd.type = pwd.type === "password" ? "text" : "password";
+}
+
+/* ========= Simulação terminal Deep Web ========= */
 const terminal = document.getElementById("terminal");
 function fakeLog() {
   const ips = ["185.220.101.1", "198.96.155.3", "103.21.244.15", "77.247.110.42"];
   const status = ["OK", "TIMEOUT", "RELAY", "CIRCUIT-BUILD", "DROP"];
   const hashes = () => Math.random().toString(36).substring(2,10);
   const log = `[${new Date().toISOString()}] TOR ${ips[Math.floor(Math.random()*ips.length)]} → ${ips[Math.floor(Math.random()*ips.length)]} | ${status[Math.floor(Math.random()*status.length)]} | HASH:${hashes()}${hashes()}`;
-  
   const line = document.createElement("div");
   line.textContent = log;
   terminal.appendChild(line);
