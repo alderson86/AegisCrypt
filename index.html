@@ -14,22 +14,36 @@
       flex-direction: column;
       align-items: center;
       min-height: 100vh;
+      position: relative;
+      overflow-x: hidden;
+    }
+    /* Marca d’água */
+    body::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: url("marcaagua.png") center center no-repeat;
+      background-size: 400px;
+      opacity: 0.08;
+      pointer-events: none;
     }
     header {
       display: flex;
       align-items: center;
       gap: 12px;
       margin: 20px 0;
+      z-index: 1;
     }
     header img {
       height: 48px;
     }
     main {
-      width: 90%;
-      max-width: 900px;
-      display: flex;
-      flex-direction: column;
+      width: 95%;
+      max-width: 1200px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
       gap: 20px;
+      z-index: 1;
     }
     .card {
       background: #2a2a2a;
@@ -64,40 +78,58 @@
       align-items: center;
     }
     #output { min-height: 120px; }
+    .col {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
   </style>
 </head>
 <body>
 <header>
   <img src="9ab5eac6-22b1-48cf-ad02-591ca0cedca8.jpg" alt="Logo AegisCrypt">
-  <h1>AegisCrypt</h1>
+  <h1>
+    
+    AegisCrypt
+  </h1>
 </header>
+
 <main>
-  <div class="card">
-    <h2>Entrada</h2>
-    <textarea id="input" placeholder="Digite seu texto ou deixe em branco para criptografar arquivo..."></textarea>
-    <input type="file" id="fileInput">
-    <div class="password-box">
-      <input type="password" id="password" placeholder="Senha">
-      <button onclick="togglePassword()">👁️</button>
-      <button onclick="generatePassword()">Gerar</button>
+  <!-- Coluna esquerda (Criptografar) -->
+  <div class="col">
+    <div class="card">
+      <h2>Criptografar</h2>
+      <textarea id="input" placeholder="Digite seu texto ou deixe em branco para criptografar arquivo..."></textarea>
+      <input type="file" id="fileInput">
+      <div class="password-box">
+        <input type="password" id="password" placeholder="Senha">
+        <button onclick="togglePassword()">👁️</button>
+        <button onclick="generatePassword()">Gerar</button>
+      </div>
+      <button onclick="encryptData()">Criptografar</button>
+      <input type="file" id="importEnc" onchange="importFile(event)">
     </div>
-    <button onclick="encryptData()">Criptografar</button>
-    <button onclick="decryptData()">Descriptografar</button>
-    <input type="file" id="importEnc" onchange="importFile(event)">
   </div>
-  <div class="card">
-    <h2>Saída</h2>
-    <textarea id="output" readonly></textarea>
-    <button onclick="copyOutput()">Copiar</button>
-    <button onclick="downloadOutput()">Baixar .enc</button>
-    <button id="downloadDecrypted" style="display:none;" onclick="downloadDecryptedFile()">Baixar Arquivo Descriptografado</button>
-  </div>
-  <div class="card">
-    <h2>Sobre</h2>
-    <p>O AegisCrypt utiliza criptografia de nivél militar <code>-</code>, <code>-</code>, <code>-</code> e metadados.</p>
+
+  <!-- Coluna direita (Descriptografar) -->
+  <div class="col">
+    <div class="card">
+      <h2>Descriptografar</h2>
+      <textarea id="output" readonly></textarea>
+      <button onclick="decryptData()">Descriptografar</button>
+      <button onclick="copyOutput()">Copiar</button>
+      <button onclick="downloadOutput()">Baixar .enc</button>
+      <button id="downloadDecrypted" style="display:none;" onclick="downloadDecryptedFile()">Baixar Arquivo Descriptografado</button>
+    </div>
+    <div class="card">
+      <h2>Sobre</h2>
+      <p>O AegisCrypt utiliza criptografia de nível militar <code>AES-256-GCM</code> com PBKDF2, salt, IV aleatório e metadados.</p>
+    </div>
   </div>
 </main>
+
 <script>
+/* ==== Funções JS iguais às do seu código anterior ==== */
 function arrayBufferToBase64(buffer) {
   let binary = '';
   const bytes = new Uint8Array(buffer);
@@ -108,54 +140,39 @@ function arrayBufferToBase64(buffer) {
   }
   return btoa(binary);
 }
-
 function base64ToArrayBuffer(base64) {
   const binary = atob(base64);
   const len = binary.length;
   const bytes = new Uint8Array(len);
-  for (let i = 0; i < len; i++) {
-    bytes[i] = binary.charCodeAt(i);
-  }
+  for (let i = 0; i < len; i++) { bytes[i] = binary.charCodeAt(i); }
   return bytes.buffer;
 }
-
 async function getKeyMaterial(password) {
   let enc = new TextEncoder();
   return crypto.subtle.importKey("raw", enc.encode(password), {name: "PBKDF2"}, false, ["deriveKey"]);
 }
-
 async function deriveKey(password, salt, iterations=600000) {
   let keyMaterial = await getKeyMaterial(password);
   return crypto.subtle.deriveKey(
-    {
-      name: "PBKDF2",
-      salt: salt,
-      iterations: iterations,
-      hash: "SHA-256"
-    },
+    { name: "PBKDF2", salt: salt, iterations: iterations, hash: "SHA-256" },
     keyMaterial,
-    {name: "AES-GCM", length: 256},
+    { name: "AES-GCM", length: 256 },
     false,
     ["encrypt", "decrypt"]
   );
 }
-
 let decryptedFileData = null;
 let decryptedFileName = "";
-
 async function encryptData() {
   const password = document.getElementById('password').value;
   if (!password) { alert("Informe uma senha."); return; }
-
   const salt = crypto.getRandomValues(new Uint8Array(16));
   const iterations = navigator.hardwareConcurrency > 4 ? 1000000 : 600000;
   const t0 = performance.now();
   const key = await deriveKey(password, salt, iterations);
   const t1 = performance.now();
-
   const iv = crypto.getRandomValues(new Uint8Array(12));
   let data, meta;
-
   const fileInput = document.getElementById('fileInput');
   if (fileInput.files.length > 0) {
     const file = fileInput.files[0];
@@ -165,38 +182,23 @@ async function encryptData() {
     data = new TextEncoder().encode(document.getElementById('input').value);
     meta = {t:"txt"};
   }
-
   const ciphertext = await crypto.subtle.encrypt({name: "AES-GCM", iv}, key, data);
-
-  const encObj = {
-    v:1,
-    t: meta.t,
-    meta: meta,
-    salt: arrayBufferToBase64(salt),
-    iv: arrayBufferToBase64(iv),
-    ct: arrayBufferToBase64(ciphertext)
-  };
-
+  const encObj = { v:1, t: meta.t, meta: meta, salt: arrayBufferToBase64(salt),
+    iv: arrayBufferToBase64(iv), ct: arrayBufferToBase64(ciphertext) };
   document.getElementById('output').value = JSON.stringify(encObj);
   alert(`KDF derivado em ${(t1-t0).toFixed(0)} ms com ${iterations} iterações`);
 }
-
 async function decryptData() {
   const password = document.getElementById('password').value;
   if (!password) { alert("Informe uma senha."); return; }
-
   let encObj;
-  try {
-    encObj = JSON.parse(document.getElementById('output').value);
-  } catch(e) { alert("Formato inválido."); return; }
-
+  try { encObj = JSON.parse(document.getElementById('output').value); }
+  catch(e) { alert("Formato inválido."); return; }
   const salt = base64ToArrayBuffer(encObj.salt);
   const iv = base64ToArrayBuffer(encObj.iv);
   const ciphertext = base64ToArrayBuffer(encObj.ct);
-
   const iterations = navigator.hardwareConcurrency > 4 ? 1000000 : 600000;
   const key = await deriveKey(password, salt, iterations);
-
   try {
     const decrypted = await crypto.subtle.decrypt({name:"AES-GCM", iv:new Uint8Array(iv)}, key, ciphertext);
     if (encObj.t === "txt") {
@@ -210,45 +212,29 @@ async function decryptData() {
     }
   } catch(e) { alert("Senha incorreta ou dados corrompidos."); }
 }
-
-function copyOutput() {
-  navigator.clipboard.writeText(document.getElementById('output').value);
-}
-
+function copyOutput() { navigator.clipboard.writeText(document.getElementById('output').value); }
 function downloadOutput() {
   const blob = new Blob([document.getElementById('output').value], {type: "application/json"});
   const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = "data.enc.json";
-  a.click();
+  const a = document.createElement('a'); a.href = url; a.download = "data.enc.json"; a.click();
 }
-
 function downloadDecryptedFile() {
   if (!decryptedFileData) return;
   const blob = new Blob([decryptedFileData]);
   const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = decryptedFileName;
-  a.click();
+  const a = document.createElement('a'); a.href = url; a.download = decryptedFileName; a.click();
 }
-
 function importFile(evt) {
-  const file = evt.target.files[0];
-  if (!file) return;
+  const file = evt.target.files[0]; if (!file) return;
   const reader = new FileReader();
   reader.onload = e => { document.getElementById('output').value = e.target.result; };
   reader.readAsText(file);
 }
-
 function generatePassword() {
   const charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()";
-  let pass = "";
-  for (let i=0; i<16; i++) pass += charset.charAt(Math.floor(Math.random()*charset.length));
+  let pass = ""; for (let i=0; i<16; i++) pass += charset.charAt(Math.floor(Math.random()*charset.length));
   document.getElementById('password').value = pass;
 }
-
 function togglePassword() {
   const pwd = document.getElementById('password');
   pwd.type = pwd.type === "password" ? "text" : "password";
